@@ -1,11 +1,13 @@
+%%cu
+#include <cuda.h>
 #include <iostream>
 #include <chrono>
 
 using namespace std;
 using namespace std::chrono;
 
-#define TAM 1000
-#define escalar 35.5
+#define TAM 6000
+#define escalar 35
 
 float A[TAM][TAM], B[TAM][TAM], C[TAM][TAM], D[TAM][TAM], V[TAM], VET[TAM];
 
@@ -21,46 +23,52 @@ void someMatrix();
 
 int main()
 {
+    auto startTotal = high_resolution_clock::now();
     cout << "Starting..." << endl;
 
     cout << "Initializing elements..." << endl;
+    auto start = high_resolution_clock::now();
     initialization();
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
+    cout << "Time: " << duration.count() / 1000000.0 << " seconds" << endl;
 
     cout << endl << "( C = A + B ) - Adding matrix A and B and storing in C..." << endl;
     auto start1 = high_resolution_clock::now();
     someMatrix();
     auto stop1 = high_resolution_clock::now();
-    auto duration1 = duration_cast<seconds>(stop1 - start1);
-    cout << "Time: " << duration1.count() << " seconds" << endl;
-    // cout << endl << "Result C: " << endl;
+    auto duration1 = duration_cast<microseconds>(stop1 - start1);
+    cout << "Time: " << duration1.count() / 1000000.0 << " seconds" << endl;
     // printC();
 
     cout << endl << "( D = A * B ) - Multiply matrix A and B and storing in D..." << endl;
     auto start2 = high_resolution_clock::now();
     multiplyMatrix();
     auto stop2 = high_resolution_clock::now();
-    auto duration2 = duration_cast<seconds>(stop2 - start2);
-    cout << "Time: " << duration2.count() << " seconds" << endl;
-    // cout << endl << "Result D: " << endl;
+    auto duration2 = duration_cast<microseconds>(stop2 - start2);
+    cout << "Time: " << duration2.count() / 1000000.0 << " seconds" << endl;
     // printD();
 
     cout << endl << "( A = A * "<< escalar <<" ) - Multiply matrix A and escalar and storing in A..." << endl;
     auto start3 = high_resolution_clock::now();
     multiplyMatrixPerEscalar();
     auto stop3 = high_resolution_clock::now();
-    auto duration3 = duration_cast<seconds>(stop3 - start3);
-    cout << "Time: " << duration3.count() << " seconds" << endl;
-    // cout << endl << "Result A: " << endl;
+    auto duration3 = duration_cast<microseconds>(stop3 - start3);
+    cout << "Time: " << duration3.count() / 1000000.0 << " seconds" << endl;
     // printA();
 
     cout << endl << "( VET = V * B ) - Multiply matrix B and vector C and storing in VET..." << endl;
     auto start4 = high_resolution_clock::now();
     multiplyMatrixPerVector();
     auto stop4 = high_resolution_clock::now();
-    auto duration4 = duration_cast<seconds>(stop4 - start4);
-    cout << "Time: " << duration4.count() << " seconds" << endl;
-    // cout << endl << "Result VET: " << endl;
+    auto duration4 = duration_cast<microseconds>(stop4 - start4);
+    cout << "Time: " << duration4.count() / 1000000.0 << " seconds" << endl;
     // printVET();
+
+    auto stopTotal = high_resolution_clock::now();
+    auto durationTotal = duration_cast<microseconds>(stopTotal - startTotal);
+    cout << "\n--------------------------------------------------" << endl;
+    cout << "Total algorithm time: " << durationTotal.count() / 1000000.0 << " seconds" << endl;
 
     return 0;
 }

@@ -1,5 +1,3 @@
-%%cu
-#include <cuda.h>
 #include <iostream>
 #include <chrono>
 

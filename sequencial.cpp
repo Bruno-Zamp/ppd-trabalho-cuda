@@ -1,3 +1,9 @@
+/*
+    Autor: Bruno de Almeida Zampirom
+    Trabalho de implementação de operações sobre matrizes utilizando sequencial
+
+    **Obs: Para printar o valor das matrizes descomentar funções printVET(), printA(), printD(), printVET() nas linhas 89, 98, 107 e 116.
+*/
 #include <iostream>
 #include <chrono>
 

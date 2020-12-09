@@ -1,3 +1,9 @@
+/*
+    Autor: Bruno de Almeida Zampirom
+    Trabalho de implementação de operações sobre matrizes utilizando CUDA
+
+    **Obs: Para printar o valor das matrizes descomentar funções printVET(), printA(), printD(), printVET() nas linhas 89, 98, 107 e 116.
+*/
 #include <iostream>
 #include <cuda.h>
 #include <chrono>
@@ -9,14 +15,13 @@ using namespace std::chrono;
 #define escalar 35.5
 
 #define THREADSPERBLOCK 1024
-#define BLOCKSPERGRID 200
+#define BLOCKSPERGRID 188
 
 float A[TAM][TAM], B[TAM][TAM], C[TAM][TAM], D[TAM][TAM], V[TAM], VET[TAM];
 
 float *d_A, *d_B, *d_C, *d_D, *d_V, *d_VET;
 size_t size, size_vec;
 
-// void initialization();
 void printA();
 void printC();
 void printD();
@@ -31,9 +36,6 @@ int main()
 {
     auto startTotal = high_resolution_clock::now();
     cout << "Starting..." << endl;
-
-    // cout << "Initializing elements..." << endl;
-    // initialization();
 
     size = TAM * TAM * sizeof(float);
     size_vec = TAM * sizeof(float);
@@ -56,13 +58,6 @@ int main()
         printf("Erro de alocação do vetor d_V\n");
     if (cudaMalloc((void**)&d_VET, size_vec) != cudaSuccess)
         printf("Erro de alocação do vetor d_VET\n");
-
-    // cudaMemcpy(d_A, A, size, cudaMemcpyHostToDevice);
-    // cudaMemcpy(d_B, B, size, cudaMemcpyHostToDevice);
-	// cudaMemcpy(d_C, C, size, cudaMemcpyHostToDevice);
-    // cudaMemcpy(d_D, D, size, cudaMemcpyHostToDevice);
-	// cudaMemcpy(d_V, V, size_vec, cudaMemcpyHostToDevice);
-	// cudaMemcpy(d_VET, VET, size_vec, cudaMemcpyHostToDevice);
 
     initializationVarCUDA<<<blocksPerGrid, threadsPerBlock>>>(d_A, d_B, d_C, d_D, d_V, d_VET, TAM);
 
@@ -139,8 +134,6 @@ __global__ void multiplyMatrix(float *A, float *B, float *D, int N) {
 
     float tmpSum = 0;
     if (row < N && col < N) {
-        // printf("A[%d, %d] = %f\n", row, col,  A[row * N + col]);
-        // printf("B[%d, %d] = %f\n", row, col,  B[row * N + col]);
         for (int i = 0; i < N; i++) {
             tmpSum += A[row * N + i] * B[i * N + col];
         }
@@ -159,9 +152,6 @@ __global__  void multiplyMatrixPerVector(float *B, float *V, float *VET, int N) 
         }
         VET[tid] = tmpSum;
     }
-    // for (int i = 0; i < TAM; ++i)
-    //     for (int j=0; j < TAM; j++)
-    //         VET[i]+= B[i][j] * V[j];
 }
 
 // Adding matrix A and B and storing in C.
@@ -170,24 +160,9 @@ __global__ void someMatrix(float *A, float *B, float *C, int N) {
     int col = blockIdx.x*blockDim.x+threadIdx.x;
 
     if (row < N && col < N) {
-        // printf("A[%d, %d] = %f\n", row, col,  A[row * N + col]);
-        // printf("B[%d, %d] = %f\n", row, col,  B[row * N + col]);
         C[row * N + col] = A[row * N + col] + B[row * N + col];
     }
 }
-
-// void initialization() {
-//     for(int i = 0; i < TAM; ++i)
-//         for(int j = 0; j < TAM; ++j)
-//         {
-//             A[i][j] = i + j;
-//             B[i][j] = i + j;
-//             C[i][j] = 0;
-//             D[i][j] = 0;
-//             V[i] = i;
-//             VET[i] = 0;
-//         }
-// }
 
 __global__ void initializationVarCUDA(float *A, float *B, float *C, float *D, float *V, float *VET, int N) {
     int row = blockIdx.y*blockDim.y+threadIdx.y;
@@ -209,9 +184,9 @@ void printC() {
     for(int j = 0; j < TAM; ++j)
     {
         if (i > 0 && j > 0 && C[i][j] == 0) teste = true;
-        // cout << " " << C[i][j];
-        // if(j == TAM-1)
-        //     cout << endl;
+        cout << " " << C[i][j];
+        if(j == TAM-1)
+            cout << endl;
     }
 
     if(teste) printf("Ocorreu um erro!");
@@ -224,9 +199,9 @@ void printD() {
     for(int j = 0; j < TAM; ++j)
     {
         if (i > 0 && j > 0 && D[i][j] == 0) teste = true;
-        // cout << " " << D[i][j];
-        // if(j == TAM-1)
-        //     cout << endl;
+        cout << " " << D[i][j];
+        if(j == TAM-1)
+            cout << endl;
     }
     if(teste) printf("Ocorreu um erro!");
 }
@@ -238,9 +213,9 @@ void printA() {
     for(int j = 0; j < TAM; ++j)
     {
         if (i > 0 && j > 0 && A[i][j] == 0) teste = true;
-        // cout << " " << A[i][j];
-        // if(j == TAM-1)
-        //     cout << endl;
+        cout << " " << A[i][j];
+        if(j == TAM-1)
+            cout << endl;
     }
     if(teste) printf("Ocorreu um erro!");
 }
@@ -250,7 +225,7 @@ void printVET() {
     bool teste = false;
     for(int i = 0; i < TAM; ++i) {
         if (i > 0 && VET[i] == 0) teste = true;
-        // cout << " " << VET[i];
+        cout << " " << VET[i];
     }
     cout << endl;
     if(teste) printf("Ocorreu um erro!");

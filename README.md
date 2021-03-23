@@ -35,6 +35,6 @@ dos testes:
 * RAM: 14000 MB.
 
 ## Conclusão
-O paralelismo utilizando a GPU apresentou uma redução significativa no tempo de execução em relação a implementação sequencial. O maior destaque fica para a operação de multiplicação entre matrizes, o qual resultou em um ganho de tempo (nas dimensões de 6000) de 297.975,50%, as demais operações também apresentaram ótimo um ganho de tempo: M+M = 109,33%; M*e = 103,92%; V*M = 15.455,32% e o Total = 215.831,23%.
+O paralelismo utilizando a GPU apresentou uma redução significativa no tempo de execução em relação a implementação sequencial. O maior destaque fica para a operação de multiplicação entre matrizes, o qual resultou em um ganho de tempo (nas dimensões de 6000) de **297.975,50%**, as demais operações também apresentaram ótimo um ganho de tempo: M+M = 109,33%; M * e = 103,92%; V * M = 15.455,32% e o Total = 215.831,23%.
 
 Diante dos dados analíticos apresentados, pode-se afirmar que o paralelismo através da GPU explorado no algoritmo, apresentou ótimos resultados no tempo de execução em relação a implementação sequencial.
